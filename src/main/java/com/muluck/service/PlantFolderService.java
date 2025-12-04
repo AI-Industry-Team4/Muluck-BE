@@ -1,5 +1,6 @@
 package com.muluck.service;
 
+import com.muluck.domain.Diagnosis;
 import com.muluck.domain.PlantFolder;
 import com.muluck.domain.User;
 import com.muluck.dto.CreateFolderResponse;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,23 +35,37 @@ public class PlantFolderService {
      * 폴더 조회
      */
     public PlantFolderListResponse getFolders(UUID userId, String sortBy) {
-        User user = findUserByStringId(userId);
+        User user = findUserByUUID(userId);
 
         List<PlantFolder> folders = plantFolderRepository.findByUser(user);
 
-        if ("name".equalsIgnoreCase(sortBy)) {
-            folders.sort(Comparator.comparing(PlantFolder::getFolderName));
-        } else {
-            folders.sort(Comparator.comparing(PlantFolder::getCreatedAt).reversed());
+        if (folders.isEmpty()) {
+            return PlantFolderListResponse.of(List.of());
         }
 
-        List<PlantFolderResponse> folderResponses = folders.stream().map(folder -> {
-            List<String> recentImages = diagnosisRepository.findTop4ImageUrlsByFolder(folder)
-                    .stream()
-                    .limit(4)
-                    .collect(Collectors.toList());
-            return new PlantFolderResponse(folder.getFolderId(), folder.getFolderName(), recentImages);
-        }).toList();
+        List<Diagnosis> allDiagnoses = diagnosisRepository.findByPlantFolderInWithResults(folders);
+
+        Map<UUID, List<String>> folderImagesMap = allDiagnoses.stream()
+                .collect(Collectors.groupingBy(
+                        d -> d.getPlantFolder().getFolderId(),
+                        Collectors.mapping(Diagnosis::getImageUrl, Collectors.toList())
+                ));
+
+        Comparator<PlantFolder> comparator = "name".equalsIgnoreCase(sortBy)
+                ? Comparator.comparing(PlantFolder::getFolderName)
+                : Comparator.comparing(PlantFolder::getCreatedAt).reversed();
+
+        List<PlantFolderResponse> folderResponses = folders.stream()
+                .sorted(comparator)
+                .map(folder -> new PlantFolderResponse(
+                        folder.getFolderId(),
+                        folder.getFolderName(),
+                        folderImagesMap.getOrDefault(folder.getFolderId(), List.of())
+                                .stream()
+                                .limit(4)
+                                .toList()
+                ))
+                .toList();
 
         return PlantFolderListResponse.of(folderResponses);
     }
@@ -58,17 +74,35 @@ public class PlantFolderService {
      * 폴더 검색
      */
     public PlantFolderListResponse  searchFolders(UUID userId, String keyword) {
-        User user = findUserByStringId(userId);
+        User user = findUserByUUID(userId);
 
         List<PlantFolder> folders = plantFolderRepository.findByUserAndFolderNameContainingIgnoreCase(user, keyword);
 
-        List<PlantFolderResponse> folderResponses = folders.stream().map(folder -> {
-            List<String> recentImages = diagnosisRepository.findTop4ImageUrlsByFolder(folder)
-                    .stream()
-                    .limit(4)
-                    .collect(Collectors.toList());
-            return new PlantFolderResponse(folder.getFolderId(), folder.getFolderName(), recentImages);
-        }).toList();
+        if (folders.isEmpty()) {
+            return PlantFolderListResponse.of(List.of());
+        }
+
+        List<Diagnosis> allDiagnoses = diagnosisRepository.findByPlantFolderInWithResults(folders);
+
+        Map<UUID, List<String>> folderImagesMap = allDiagnoses.stream()
+                .collect(Collectors.groupingBy(
+                        d -> d.getPlantFolder().getFolderId(),
+                        Collectors.mapping(Diagnosis::getImageUrl, Collectors.toList())
+                ));
+
+        Comparator<PlantFolder> comparator = Comparator.comparing(PlantFolder::getCreatedAt).reversed();
+
+        List<PlantFolderResponse> folderResponses = folders.stream()
+                .sorted(comparator)
+                .map(folder -> new PlantFolderResponse(
+                        folder.getFolderId(),
+                        folder.getFolderName(),
+                        folderImagesMap.getOrDefault(folder.getFolderId(), List.of())
+                                .stream()
+                                .limit(4)
+                                .toList()
+                ))
+                .toList();
 
         return PlantFolderListResponse.of(folderResponses);
     }
@@ -78,7 +112,7 @@ public class PlantFolderService {
      */
     @Transactional
     public CreateFolderResponse createFolder(UUID  userId, String folderName) {
-        User user = findUserByStringId(userId);
+        User user = findUserByUUID(userId);
 
         if (plantFolderRepository.existsByUserAndFolderName(user, folderName)) {
             throw new BaseException(PLANT_FOLDER_DUPLICATE);
@@ -90,7 +124,7 @@ public class PlantFolderService {
         return new CreateFolderResponse(saved.getFolderName());
     }
 
-    private User findUserByStringId(UUID userId) {
+    private User findUserByUUID(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(()-> new BaseException(USER_NOT_FOUND));
     }

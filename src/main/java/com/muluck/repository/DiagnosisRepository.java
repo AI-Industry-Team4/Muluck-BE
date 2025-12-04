@@ -13,8 +13,9 @@ import java.util.UUID;
 @Repository
 public interface DiagnosisRepository extends JpaRepository<Diagnosis, UUID> {
 
-    @Query("SELECT d.imageUrl FROM Diagnosis d " +
-            "WHERE d.plantFolder = :folder " +
-            "ORDER BY d.diagnosisDate DESC")
-    List<String> findTop4ImageUrlsByFolder(@Param("folder") PlantFolder folder);
+    @Query("SELECT DISTINCT d FROM Diagnosis d " +
+            "LEFT JOIN FETCH d.diseaseResult " +
+            "LEFT JOIN FETCH d.healthyResult " +
+            "WHERE d.plantFolder IN :folders")
+    List<Diagnosis> findByPlantFolderInWithResults(@Param("folders") List<PlantFolder> folders);
 }
