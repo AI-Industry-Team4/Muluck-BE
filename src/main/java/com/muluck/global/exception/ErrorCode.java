@@ -16,9 +16,11 @@ public enum ErrorCode {
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U001", "사용자를 찾을 수 없습니다."),
+    INVALID_USER_ID(HttpStatus.BAD_REQUEST, "U002", "잘못된 사용자 ID 형식입니다."),
 
     // PlantFolder
     PLANT_FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "식물 폴더를 찾을 수 없습니다."),
+    PLANT_FOLDER_DUPLICATE(HttpStatus.BAD_REQUEST, "P002", "이미 존재하는 폴더 이름입니다."),
 
     // Diagnosis
     DIAGNOSIS_NOT_FOUND(HttpStatus.NOT_FOUND, "D001", "진단 기록을 찾을 수 없습니다."),
