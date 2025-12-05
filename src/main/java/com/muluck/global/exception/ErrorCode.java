@@ -24,13 +24,18 @@ public enum ErrorCode {
     DIAGNOSIS_NOT_FOUND(HttpStatus.NOT_FOUND, "D001", "진단 기록을 찾을 수 없습니다."),
     INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "D002", "지원하지 않는 이미지 형식입니다."),
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "D003", "이미지 업로드에 실패했습니다."),
+    DIAGNOSIS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "D004", "진단 처리 중 오류가 발생했습니다."),
 
     // Result
     RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "R001", "진단 결과를 찾을 수 없습니다."),
 
     // Azure
     AZURE_CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "A001", "Azure 서비스 연결에 실패했습니다."),
-    AZURE_AI_ANALYSIS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "A002", "AI 분석에 실패했습니다.");
+    AZURE_AI_ANALYSIS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "A002", "AI 분석에 실패했습니다."),
+    CUSTOM_VISION_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "A003", "CustomVision API 호출에 실패했습니다."),
+    
+    // OpenAI
+    OPENAI_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "O001", "OpenAI API 호출에 실패했습니다.");
 
     private final HttpStatus status;
     private final String code;
