@@ -63,4 +63,8 @@ public class Diagnosis extends BaseEntity {
         this.imageSource = imageSource;
         this.diagnosisType = diagnosisType;
     }
+
+    public void moveToFolder(PlantFolder targetFolder) {
+        this.plantFolder = targetFolder;
+    }
 }
