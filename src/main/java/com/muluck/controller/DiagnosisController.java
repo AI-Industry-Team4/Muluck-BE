@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/diagnoses")
+@RequestMapping("/api/v1/diagnoses")
 @RequiredArgsConstructor
 @Tag(name = "Diagnosis", description = "식물 병충해 진단 API")
 public class DiagnosisController {
