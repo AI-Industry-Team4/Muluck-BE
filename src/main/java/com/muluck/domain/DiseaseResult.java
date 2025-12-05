@@ -35,6 +35,9 @@ public class DiseaseResult extends BaseEntity {
     @Column(name = "cause", columnDefinition = "TEXT")
     private String cause;
 
+    @Column(name = "risk_level", length = 20)
+    private String riskLevel;
+
     @Column(name = "management_guide", columnDefinition = "TEXT")
     private String managementGuide;
 
