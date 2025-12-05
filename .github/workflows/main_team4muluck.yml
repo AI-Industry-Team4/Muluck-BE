@@ -26,6 +26,7 @@ jobs:
           
       - name: Create application.yml from Secret
         run: |
+          mkdir -p src/main/resources
           echo ${{ secrets.APPLICATION_YML_SECRET }} | base64 --decode > ./src/main/resources/application.yml
           
       - name: Grant execute permission for gradlew
@@ -69,4 +70,5 @@ jobs:
           package: '*.jar'
 
           
+
 
