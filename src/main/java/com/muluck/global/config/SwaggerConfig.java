@@ -16,11 +16,6 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Muluck API")
-                        .version("v1.0.0"))
-                .servers(List.of(
-                        new Server()
-                                .url("http://localhost:8080")
-                                .description("로컬 개발 서버")
-                ));
+                        .version("v1.0.0"));
     }
 }
