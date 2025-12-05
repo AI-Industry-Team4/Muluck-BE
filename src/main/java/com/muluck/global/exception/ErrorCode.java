@@ -17,6 +17,7 @@ public enum ErrorCode {
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U001", "사용자를 찾을 수 없습니다."),
     INVALID_USER_ID(HttpStatus.BAD_REQUEST, "U002", "잘못된 사용자 ID 형식입니다."),
+    USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "U003", "해당 리소스에 접근할 수 없습니다."),
 
     // PlantFolder
     PLANT_FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "식물 폴더를 찾을 수 없습니다."),
