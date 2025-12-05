@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public record DiseaseResultDto(
         String diseaseName,
-        BigDecimal confidenceScore,
+        String confidenceScore,
         String description,
         String cause,
         String riskLevel,
@@ -15,11 +15,17 @@ public record DiseaseResultDto(
     public static DiseaseResultDto from(DiseaseResult dr) {
         return new DiseaseResultDto(
                 dr.getDiseaseName(),
-                dr.getConfidenceScore(),
+                formatConfidence(dr.getConfidenceScore()),
                 dr.getDiseaseDescription(),
                 dr.getCause(),
                 dr.getRiskLevel(),
                 dr.getManagementGuide()
         );
+    }
+
+    private static String formatConfidence(BigDecimal score) {
+        if (score == null) return null;
+        return score.multiply(BigDecimal.valueOf(100))
+                .setScale(0, java.math.RoundingMode.HALF_UP) + "%";
     }
 }

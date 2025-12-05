@@ -20,7 +20,7 @@ public class PlantFolderController {
 
     private final PlantFolderService plantFolderService;
 
-    @Operation(summary = "홈화면 사용자 폴더 목록 조회", description = "사용자 폴더 목록을 조회합니다." + "`sortBy` 파라미터를 사용해 `latest`(최신순) 또는 `name`(이름순)으로 정렬")
+    @Operation(summary = "홈화면 사용자 폴더 목록 조회", description = "사용자 폴더 목록을 조회." + "`sortBy` 파라미터를 사용해 `latest`(최신순) 또는 `name`(이름순)으로 정렬")
     @GetMapping
     public ResponseEntity<ApiResponse<PlantFolderListResponse>> getFolders(
             @RequestHeader("User-Id") UUID userId,
@@ -40,7 +40,7 @@ public class PlantFolderController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @Operation(summary = "홈화면 사용자 폴더 목록에서 검색",
+    @Operation(summary = "새로운 폴더 생성",
             description = "사용자가 새 폴더를 생성. `folderName` 파라미터로 폴더 이름 지정 가능 (중복되는 이름 불가)")
     @PostMapping
     public ResponseEntity<ApiResponse<CreateFolderResponse>> createFolder(
