@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/build/libs/*.jar'
+          path: '${{ github.workspace }}/build/libs/app.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -67,8 +67,9 @@ jobs:
         with:
           app-name: 'team4muluck'
           slot-name: 'Production'
-          package: '*.jar'
+          package: app.jar
 
           
+
 
 
