@@ -10,12 +10,14 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
-
+  
     @Bean
+
     public OpenAPI muluckOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title("Muluck API")
                         .version("v1.0.0"));
+
     }
 }
