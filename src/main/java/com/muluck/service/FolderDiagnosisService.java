@@ -3,6 +3,7 @@ package com.muluck.service;
 import com.muluck.domain.Diagnosis;
 import com.muluck.domain.PlantFolder;
 import com.muluck.domain.User;
+import com.muluck.dto.DiagnosisDetailResponse;
 import com.muluck.dto.DiagnosisItemListResponse;
 import com.muluck.dto.DiagnosisItemResponse;
 import com.muluck.global.exception.BaseException;
@@ -93,5 +94,18 @@ public class FolderDiagnosisService {
         }
 
         diagnosis.moveToFolder(targetFolder);
+    }
+
+
+    public DiagnosisDetailResponse getDiagnosisDetail(UUID userId, UUID diagnosisId) {
+
+        Diagnosis diagnosis = diagnosisRepository.findDetailById(diagnosisId)
+                .orElseThrow(() -> new BaseException(ErrorCode.DIAGNOSIS_NOT_FOUND));
+
+        if (!diagnosis.getPlantFolder().getUser().getUserId().equals(userId)) {
+            throw new BaseException(ErrorCode.USER_NOT_AUTHORIZED);
+        }
+
+        return DiagnosisDetailResponse.from(diagnosis);
     }
 }

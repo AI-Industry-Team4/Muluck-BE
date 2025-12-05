@@ -1,5 +1,6 @@
 package com.muluck.controller;
 
+import com.muluck.dto.DiagnosisDetailResponse;
 import com.muluck.dto.DiagnosisItemListResponse;
 import com.muluck.global.response.ApiResponse;
 import com.muluck.service.FolderDiagnosisService;
@@ -58,5 +59,18 @@ public class FolderDiagnosisController {
     ) {
         folderDiagnosisService.moveDiagnosis(userId, diagnosisId, targetFolderId);
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    /**
+     * 진단 기록 단 건 상세 조회
+     */
+    @Operation(summary = "진단 기록 단 건 상세 조회", description = "사용자 폴더 내 진단 기록 하나를 상세 조회")
+    @GetMapping("/diagnoses/{diagnosisId}")
+    public ResponseEntity<ApiResponse<DiagnosisDetailResponse>> getDiagnosisDetail(
+            @RequestHeader("User-Id") UUID userId,
+            @PathVariable UUID diagnosisId
+    ) {
+        DiagnosisDetailResponse response = folderDiagnosisService.getDiagnosisDetail(userId, diagnosisId);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

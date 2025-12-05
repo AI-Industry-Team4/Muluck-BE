@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -18,4 +19,12 @@ public interface DiagnosisRepository extends JpaRepository<Diagnosis, UUID> {
             "LEFT JOIN FETCH d.healthyResult " +
             "WHERE d.plantFolder IN :folders")
     List<Diagnosis> findByPlantFolderInWithResults(@Param("folders") List<PlantFolder> folders);
+
+    @Query("""
+    SELECT d FROM Diagnosis d
+    LEFT JOIN FETCH d.healthyResult
+    LEFT JOIN FETCH d.diseaseResult
+    WHERE d.diagnosisId = :diagnosisId
+""")
+    Optional<Diagnosis> findDetailById(@Param("diagnosisId") UUID diagnosisId);
 }
