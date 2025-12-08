@@ -15,6 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:8081",
                         "http://localhost:5173",
+                        "https://muluck.vercel.app",
                         AZURE_APP_SERVICE_ORIGIN
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
