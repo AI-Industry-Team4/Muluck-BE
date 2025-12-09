@@ -241,21 +241,24 @@ public class DiagnosisService {
         // GPT 프롬프트 요청 생성
         GptPromptRequestDto promptRequest = buildPromptRequest(CaseType.CANDIDATES_3, crop, cvResponse);
         
-        // GPT 호출
-        GptPromptRequestDto.DiseaseCandidate analyzed = openAIClient.analyzePrimaryDisease(promptRequest);
+        // GPT 호출 - 3개 후보 모두 분석
+        List<GptPromptRequestDto.DiseaseCandidate> analyzedCandidates = openAIClient.analyzeCandidates(promptRequest);
         
-        // 후보 목록 생성
+        // 후보 목록 생성 (GPT에서 받은 description 포함)
         List<DiagnosisResponseDto.DiseaseCandidate> candidates = new ArrayList<>();
-        for (int i = 0; i < Math.min(3, cvResponse.getPredictions().size()); i++) {
-            var pred = cvResponse.getPredictions().get(i);
-            TagMeta meta = TAG_META_MAP.get(pred.getTagName());
+        for (int i = 0; i < analyzedCandidates.size(); i++) {
+            var analyzed = analyzedCandidates.get(i);
             
             candidates.add(DiagnosisResponseDto.DiseaseCandidate.builder()
-                    .diseaseName(meta.diseaseKo)
-                    .confidenceScore(pred.getProbability())
+                    .diseaseName(analyzed.getDiseaseKo())
+                    .confidenceScore(analyzed.getProbability())
                     .rank(i + 1)
+                    .description(analyzed.getDescription())  // GPT로 생성된 description
                     .build());
         }
+        
+        // primaryDisease는 첫 번째 후보
+        var primaryCandidate = analyzedCandidates.get(0);
         
         return DiagnosisResponseDto.builder()
                 .imageUrl(imageUrl)
@@ -263,11 +266,11 @@ public class DiagnosisService {
                 .crop(crop)
                 .candidates(candidates)
                 .primaryDisease(DiagnosisResponseDto.DiseaseInfo.builder()
-                        .diseaseName(analyzed.getDiseaseKo())
-                        .confidenceScore(analyzed.getProbability())
-                        .description(analyzed.getDescription())
-                        .causes(analyzed.getCauses())
-                        .managementTips(analyzed.getCareTips())
+                        .diseaseName(primaryCandidate.getDiseaseKo())
+                        .confidenceScore(primaryCandidate.getProbability())
+                        .description(primaryCandidate.getDescription())
+                        .causes(primaryCandidate.getCauses())
+                        .managementTips(primaryCandidate.getCareTips())
                         .build())
                 .build();
     }
