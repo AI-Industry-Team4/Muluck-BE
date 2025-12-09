@@ -52,6 +52,26 @@ public class OpenAIClient {
         }
     }
 
+    // GPT-4o-mini를 호출하여 3개 후보 질병을 분석
+    public List<GptPromptRequestDto.DiseaseCandidate> analyzeCandidates(GptPromptRequestDto promptRequest) {
+        try {
+            String systemPrompt = buildSystemPrompt();
+            String userPrompt = buildUserPrompt(promptRequest);
+
+            String gptResponse = callGptApi(systemPrompt, userPrompt);
+            
+            // 전체 JSON을 GptPromptRequestDto로 파싱
+            GptPromptRequestDto parsedResponse = objectMapper.readValue(gptResponse, GptPromptRequestDto.class);
+            
+            // candidates 추출 (description이 채워진 상태)
+            return parsedResponse.getCandidates();
+
+        } catch (Exception e) {
+            log.error("Failed to analyze candidates with GPT", e);
+            throw new RuntimeException("후보 질병 분석에 실패했습니다.", e);
+        }
+    }
+
     // GPT-4o-mini를 호출하여 건강한 식물 관리 팁 생성
     public List<String> generateHealthyCareTips(String crop) {
         try {
