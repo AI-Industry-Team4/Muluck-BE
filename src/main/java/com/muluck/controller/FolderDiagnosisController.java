@@ -36,7 +36,7 @@ public class FolderDiagnosisController {
     /**
      * 한 폴더에서 진단기록 검색
      */
-    @Operation(summary = "한 폴더에서 진단 기록 검색", description = "한 사용자의 특정 폴더 내 진단 기록을 `질병명`으로 검색")
+    @Operation(summary = "한 폴더에서 진단 기록 검색", description = "사용자의 특정 폴더 내 진단 기록을 `질병명`으로 검색하여 기록 (목록) 조회")
     @GetMapping("/{folderId}/diagnoses/search")
     public ResponseEntity<ApiResponse<DiagnosisItemListResponse>> searchFolderDiagnoses(
             @RequestHeader("User-Id") UUID userId,

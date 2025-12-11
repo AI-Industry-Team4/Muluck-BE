@@ -4,9 +4,9 @@
 name: Build and deploy JAR app to Azure Web App - team4muluck
 
 on:
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
   workflow_dispatch:
 
 jobs:
