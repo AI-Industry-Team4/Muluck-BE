@@ -1,4 +1,4 @@
-name: Deploy Docker to Azure (Publish Profile)
+name: Deploy Docker to Azure
 
 on:
   push:
