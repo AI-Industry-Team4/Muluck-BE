@@ -53,10 +53,11 @@ jobs:
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
 
-      # 7. 배포
-      - name: Deploy to Azure Web App
+      # 7. 배포 (슬롯 교체)
+      - name: Deploy to Azure Web App (Staging)
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.APP_SERVICE_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          slot-name: 'staging'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING }}
           images: '${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}'
