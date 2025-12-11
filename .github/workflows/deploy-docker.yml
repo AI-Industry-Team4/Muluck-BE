@@ -3,7 +3,7 @@ name: Deploy Docker to Azure (Publish Profile)
 on:
   push:
     branches:
-      - feature/deploy
+      - feat/deploy
   workflow_dispatch:
 
 env:
