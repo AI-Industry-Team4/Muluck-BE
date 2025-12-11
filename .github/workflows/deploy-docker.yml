@@ -3,7 +3,7 @@ name: Deploy Docker to Azure
 on:
   push:
     branches:
-      - feat/deploy
+      - main
   workflow_dispatch:
 
 env:
